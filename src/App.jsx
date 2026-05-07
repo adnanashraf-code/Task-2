@@ -6,19 +6,16 @@ const App = () => {
   const [UserRole, setUserRole] = useState("");
   const [UserDisc, setUserDisc] = useState("");
   const [ImageURL, setImageURL] = useState("");
-  const [AllUSer, setallUSer] = useState([]);
+  const localdata = JSON.parse(localStorage.getItem("all-user")) || [];
+  const [AllUSer, setallUSer] = useState(localdata);
 
   const submitHandler = (e) => {
     e.preventDefault();
 
-    const newUser = {
-      UserName,
-      UserRole,
-      UserDisc,
-      ImageURL,
-    };
-
-    setallUSer([...AllUSer, newUser]);
+    const oldUser = [...AllUSer];
+    oldUser.push({UserName, UserRole, UserDisc, ImageURL});
+    setallUSer(oldUser);
+    localStorage.setItem("all-user", JSON.stringify(oldUser));
 
     setUserName("");
     setUserRole("");
@@ -28,8 +25,14 @@ const App = () => {
 
   const deleteHandler = (idx) => {
     const copyuser = [...AllUSer];
-    copyuser.splice(idx, 1);
+    const conf = confirm("Are you sure you want to delete this user?");
+    if (conf) {
+      copyuser.splice(idx, 1);
+    } else {
+      alert("User deletion cancelled");
+    }
     setallUSer(copyuser);
+    localStorage.setItem("all-user", JSON.stringify(copyuser));
   };
 
   return (
